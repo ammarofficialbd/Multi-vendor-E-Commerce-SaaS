@@ -30,6 +30,8 @@ export const validRegestrationData = (
   }
 };
 
+//
+
 export const checkOtpRestricksion = async (
   email: string,
   next: NextFunction
@@ -55,6 +57,8 @@ export const checkOtpRestricksion = async (
   }
 };
 
+//
+
 export const trackOtpRequest = async (email: string, next: NextFunction) => {
   const otpRequestKey = `otp_request_count: ${email}`;
 
@@ -73,6 +77,8 @@ export const trackOtpRequest = async (email: string, next: NextFunction) => {
   await redis.set(otpRequestKey, otpRequests + 1, "EX", 3600); //track request for 1 hour
 };
 
+
+//
 export const sendOtp = async (
   name: string,
   email: string,

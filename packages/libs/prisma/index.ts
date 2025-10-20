@@ -1,15 +1,17 @@
 import { PrismaClient } from "@prisma/client";
 
-
+// ✅ Extend the global type safely
 declare global {
-    namespace globalThis {
-        var prismadb : PrismaClient
-    }
+  // `undefined` is important to avoid type errors during first load
+  var prismadb: PrismaClient | undefined;
 }
 
+// ✅ Reuse existing client in dev; new one in production
+const prismadb = globalThis.prismadb || new PrismaClient();
 
-const prisma = new PrismaClient();
+if (process.env.NODE_ENV !== "production") {
+  globalThis.prismadb = prismadb;
+}
 
-if(process.env.NODE_ENV === "production") global.prismadb = prisma;
-
-export default prisma;
+// ✅ Use named export (more consistent with TypeScript ecosystem)
+export { prismadb };
