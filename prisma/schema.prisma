@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model images {
+id String @id @default(auto()) @map("_id") @db.ObjectId
+file_id String
+url String
+userId String? @unique @db.ObjectId
+users users? @relation(fields: [userId], references: [id])
+}
+
+model users {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  email         String    @unique
+  password      String // Hashed password
+  firstName     String?
+  lastName      String?
+  avatar        images?
+  following     String[]
+  role          Role      @default(CUSTOMER) // Role-based access: CUSTOMER, SELLER, ADMIN
+  isActive      Boolean   @default(true)
+  imagesId      String    @db.ObjectId
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+enum Role {
+  CUSTOMER
+  SELLER
+  ADMIN
+}
+
